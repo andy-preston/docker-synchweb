@@ -1,0 +1,60 @@
+#!/bin/bash
+
+CONT_NAME="php-sw"
+RUN_NAME="run-${CONT_NAME}"
+DOCKER_DIR="$(dirname $0)"
+CONT_WORK_DIR='/usr/local/src'
+
+cd $(echo $DOCKER_DIR | sed 's/docker\/web/SynchWeb/g')
+
+case $1 in
+'shell')
+    TASK='shell'
+    COMMAND='bash'
+    ;;
+'backend')
+    TASK='shell'
+    COMMAND="php -S 0.0.0.0:8000"
+    CONT_WORK_DIR="$CONT_WORK_DIR/api"
+    ;;
+'frontend')
+    TASK='shell'
+    # COMMAND="php -S 0.0.0.0:9000"
+    COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
+    CONT_WORK_DIR="$CONT_WORK_DIR/client"
+    ;;
+*)
+    TASK=$1
+    ;;
+esac
+
+case $TASK in
+'run')
+    docker build --tag ${CONT_NAME} ${DOCKER_DIR}
+
+    docker run \
+        --rm --interactive --tty \
+        --workdir ${CONT_WORK_DIR} \
+        --publish 8000:8000 \
+        --publish 9000:9000 \
+        --user $(id -u):$(id -g) \
+        --volume $(pwd):/usr/local/src \
+        --volume ${HOME}/.ssh:/home/dev/.ssh:ro \
+        --name ${RUN_NAME} \
+        ${CONT_NAME} bash
+    ;;
+'shell')
+    [[ $2 == "wait" ]] && sleep 10
+    docker container exec \
+        --interactive --tty \
+        --workdir ${CONT_WORK_DIR} \
+        ${RUN_NAME} ${COMMAND}
+    ;;
+*)
+    echo "run from the project working directory"
+    echo "../docker/php/container run        {start container}"
+    echo "../docker/php/container shell      {bash}"
+    echo "../docker/php/container backend    {PHP dev. server for back end}"
+    echo "../docker/php/container frontend   {Webpack dev. server for back end}"
+    ;;
+esac
