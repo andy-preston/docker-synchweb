@@ -44,7 +44,13 @@ case $TASK in
         ${CONT_NAME} bash
     ;;
 'shell')
-    [[ $2 == "wait" ]] && sleep 10
+    if [[ $2 == "wait" ]]
+    then
+        until [[ $(docker container ls | grep ${RUN_NAME} | wc -l) == 1 ]]
+        do
+            sleep 0.1
+        done
+    fi
     docker container exec \
         --interactive --tty \
         --workdir ${CONT_WORK_DIR} \
