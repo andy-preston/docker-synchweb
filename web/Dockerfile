@@ -3,6 +3,8 @@ ENV TERM=linux
 ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_HOME=/var/tmp/composer
 
+COPY lint-docker /usr/local/bin
+
 RUN apt-get update && \
     apt-get -y upgrade && \
     apt-get -y --no-install-recommends install \

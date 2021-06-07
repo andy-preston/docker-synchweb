@@ -1,0 +1,16 @@
+#!/bin/bash
+
+LINTER=$1
+HOST_WORK_DIR=$2
+CONT_WORK_DIR=$3
+
+OPTIONS=$(echo ${@:4} | sed "s#${HOST_WORK_DIR}#${CONT_WORK_DIR}#g")
+
+if [[ $LINTER == 'phpcs' ]]
+then
+    HOST_WORK_DIR="${HOST_WORK_DIR//\//\\\\/}"
+    CONT_WORK_DIR="${CONT_WORK_DIR//\//\\\\/}"
+fi
+
+$LINTER $OPTIONS | sed "s#${CONT_WORK_DIR}#${HOST_WORK_DIR}#g"
+

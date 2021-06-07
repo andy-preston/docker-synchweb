@@ -2,31 +2,50 @@
 
 CONT_NAME="php-sw"
 RUN_NAME="run-${CONT_NAME}"
-DOCKER_DIR="$(dirname $0)"
+DOCKER_DIR=$(dirname $0)
+THIS_SCRIPT=$(basename $0)
+
+cd $(echo ${DOCKER_DIR} | sed 's#docker/web#SynchWeb#g')
+
+HOST_WORK_DIR=$(pwd)
 CONT_WORK_DIR='/usr/local/src'
 
-cd $(echo $DOCKER_DIR | sed 's/docker\/web/SynchWeb/g')
-
-case $1 in
-'shell')
+if [[ ${THIS_SCRIPT} != 'container' ]]
+then
     TASK='shell'
-    COMMAND='bash'
-    ;;
-'backend')
+    TTY=''
+    case ${THIS_SCRIPT} in
+    'php')
+        COMMAND="php $@"
+        ;;
+    'phpcs')
+        COMMAND="lint-docker phpcs ${HOST_WORK_DIR} ${CONT_WORK_DIR} $@"
+        ;;
+    'phpmd')
+        COMMAND="lint-docker phpmd ${HOST_WORK_DIR} ${CONT_WORK_DIR} $@"
+        ;;
+    esac
+else
     TASK='shell'
-    COMMAND="php -S 0.0.0.0:8000"
-    CONT_WORK_DIR="$CONT_WORK_DIR/api"
-    ;;
-'frontend')
-    TASK='shell'
-    # COMMAND="php -S 0.0.0.0:9000"
-    COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
-    CONT_WORK_DIR="$CONT_WORK_DIR/client"
-    ;;
-*)
-    TASK=$1
-    ;;
-esac
+    TTY='--tty'
+    case $1 in
+    'shell')
+        COMMAND='bash'
+        ;;
+    'backend')
+        COMMAND="php -S 0.0.0.0:8000"
+        CONT_WORK_DIR="${CONT_WORK_DIR}/api"
+        ;;
+    'frontend')
+        # COMMAND="php -S 0.0.0.0:9000"
+        COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
+        CONT_WORK_DIR="${CONT_WORK_DIR}/client"
+        ;;
+    *)
+        TASK=$1
+        ;;
+    esac
+fi
 
 case $TASK in
 'run')
@@ -38,7 +57,7 @@ case $TASK in
         --publish 8000:8000 \
         --publish 9000:9000 \
         --user $(id -u):$(id -g) \
-        --volume $(pwd):/usr/local/src \
+        --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
         --volume ${HOME}/.ssh:/home/dev/.ssh:ro \
         --name ${RUN_NAME} \
         ${CONT_NAME} bash
@@ -52,7 +71,7 @@ case $TASK in
         done
     fi
     docker container exec \
-        --interactive --tty \
+        --interactive ${TTY} \
         --workdir ${CONT_WORK_DIR} \
         ${RUN_NAME} ${COMMAND}
     ;;
@@ -62,5 +81,7 @@ case $TASK in
     echo "../docker/php/container shell      {bash}"
     echo "../docker/php/container backend    {PHP dev. server for back end}"
     echo "../docker/php/container frontend   {Webpack dev. server for back end}"
+    echo "../docker/php/phpcs                {run php code sniffer}"
+    echo "../docker/php/phpmd                {run php mess detector}"
     ;;
 esac
