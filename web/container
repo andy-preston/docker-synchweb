@@ -10,6 +10,17 @@ cd $(echo ${DOCKER_DIR} | sed 's#docker/web#SynchWeb#g')
 HOST_WORK_DIR=$(pwd)
 CONT_WORK_DIR='/usr/local/src'
 
+# This is complicated - would be easier if we just had the VPN connection in
+# fabrika.lan
+DNS_SERVERS=$(
+   for CONNECTION in $(
+      nmcli --terse --fields UUID connection show --active
+   )
+   do
+      nmcli --terse -fields IP4.DNS connection show $CONNECTION
+   done | awk -F: '{ print "--dns " $2 }'
+)
+
 if [[ ${THIS_SCRIPT} != 'container' ]]
 then
     TASK='shell'
@@ -56,6 +67,7 @@ case $TASK in
         --workdir ${CONT_WORK_DIR} \
         --publish 8000:8000 \
         --publish 9000:9000 \
+        ${DNS_SERVERS} \
         --user $(id -u):$(id -g) \
         --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
         --volume ${HOME}/.ssh:/home/dev/.ssh:ro \
