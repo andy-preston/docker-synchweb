@@ -48,7 +48,6 @@ else
         CONT_WORK_DIR="${CONT_WORK_DIR}/api"
         ;;
     'frontend')
-        # COMMAND="php -S 0.0.0.0:9000"
         COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
         CONT_WORK_DIR="${CONT_WORK_DIR}/client"
         ;;
