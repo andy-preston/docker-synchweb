@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONT_NAME="php-sw"
+CONT_NAME='php-sw'
 RUN_NAME="run-${CONT_NAME}"
 DOCKER_DIR=$(dirname $0)
 THIS_SCRIPT=$(basename $0)
