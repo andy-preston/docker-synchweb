@@ -29,11 +29,8 @@ then
     'php')
         COMMAND="php $@"
         ;;
-    'phpcs')
-        COMMAND="lint-docker phpcs ${HOST_WORK_DIR} ${CONT_WORK_DIR} $@"
-        ;;
-    'phpmd')
-        COMMAND="lint-docker phpmd ${HOST_WORK_DIR} ${CONT_WORK_DIR} $@"
+    phpcs|phpmd)
+        COMMAND="lint-docker ${THIS_SCRIPT} ${HOST_WORK_DIR} ${CONT_WORK_DIR} $@"
         ;;
     esac
 else
@@ -79,6 +76,7 @@ case $TASK in
     do
         sleep 0.1
     done
+
     docker container exec \
         --interactive ${TTY} \
         --workdir ${CONT_WORK_DIR} \
