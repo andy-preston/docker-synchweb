@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_HOME=/var/tmp/composer
 
 COPY lint-docker /usr/local/bin
+COPY mysql-config.php /usr/local/bin
 
 RUN apt-get update && \
     apt-get -y upgrade && \

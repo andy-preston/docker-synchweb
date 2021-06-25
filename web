@@ -4,8 +4,9 @@ CONT_NAME='php-sw'
 RUN_NAME="run-${CONT_NAME}"
 DOCKER_DIR=$(dirname $0)
 THIS_SCRIPT=$(basename $0)
+DEV_SERVER='https://cs04r-sc-vserv-163.diamond.ac.uk'
 
-cd $(echo ${DOCKER_DIR} | sed 's#docker/web#SynchWeb#g')
+cd $(echo ${DOCKER_DIR} | sed 's/docker/SynchWeb/g')
 
 HOST_WORK_DIR=$(pwd)
 CONT_WORK_DIR='/usr/local/src'
@@ -21,7 +22,7 @@ DNS_SERVERS=$(
    done | awk -F: '{ print "--dns " $2 }'
 )
 
-if [[ ${THIS_SCRIPT} != 'container' ]]
+if [[ ${THIS_SCRIPT} != 'web' ]]
 then
     TASK='shell'
     TTY=''
@@ -45,8 +46,13 @@ else
         CONT_WORK_DIR="${CONT_WORK_DIR}/api"
         ;;
     'frontend')
-        COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
+        # TODO: make it use ${DEV_SERVER} when it needs to
+        PROXY_TARGET="--env.proxy.target=${2:-http://0.0.0.0:8000}/"
+        COMMAND="npm run serve -- ${PROXY_TARGET} --host=0.0.0.0"
         CONT_WORK_DIR="${CONT_WORK_DIR}/client"
+        ;;
+    'mysql')
+        COMMAND='php /usr/local/bin/mysql-config.php'
         ;;
     *)
         TASK=$1
@@ -83,12 +89,13 @@ case $TASK in
         ${RUN_NAME} ${COMMAND}
     ;;
 *)
-    echo "run from the project working directory"
-    echo "../docker/php/container run        {start container}"
-    echo "../docker/php/container shell      {bash}"
-    echo "../docker/php/container backend    {PHP dev. server for back end}"
-    echo "../docker/php/container frontend   {Webpack dev. server for back end}"
-    echo "../docker/php/phpcs                {run php code sniffer}"
-    echo "../docker/php/phpmd                {run php mess detector}"
+    echo -e "\n\nrun from the project working directory\n"
+    echo "../docker/web run                       start container"
+    echo "../docker/web shell                     bash"
+    echo "../docker/web backend                   PHP dev. server"
+    echo "../docker/web frontend {backend server} Webpack dev. server"
+    echo "../docker/phpcs                         run php code sniffer"
+    echo "../docker/phpmd                         run php mess detector"
+    echo -e "\ncontainer frontend ${DEV_SERVER}"
     ;;
 esac

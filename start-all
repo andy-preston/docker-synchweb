@@ -3,14 +3,14 @@
 DOCKER_DIR=$(realpath $(dirname $0))
 
 MARIADB="$DOCKER_DIR/mariadb"
-WEB="$DOCKER_DIR/web/container"
+WEB="$DOCKER_DIR/web"
 
 WORK_DIR=$(echo $DOCKER_DIR | sed 's/docker/SynchWeb/g')
 
 xfce4-terminal --maximize \
-    --command="fish --init-command='cd $WORK_DIR'" --title="$WORK_DIR" \
-    --tab --command="$MARIADB run" --title='mariadb' \
-    --tab --command="$WEB backend" --title='backend' \
+    --command="$WEB backend" --title='backend' \
     --tab --command="$WEB frontend" --title='frontend' \
     --tab --command="$WEB run" --title='web container' \
+    --tab --command="fish --init-command='cd $WORK_DIR'" --title="$WORK_DIR" \
+    # --tab --command="$MARIADB run" --title='mariadb'
 
