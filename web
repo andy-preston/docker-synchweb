@@ -4,7 +4,6 @@ CONT_NAME='php-sw'
 RUN_NAME="run-${CONT_NAME}"
 DOCKER_DIR=$(dirname $0)
 THIS_SCRIPT=$(basename $0)
-DEV_SERVER='https://cs04r-sc-vserv-163.diamond.ac.uk'
 
 cd $(echo ${DOCKER_DIR} | sed 's/docker/SynchWeb/g')
 
@@ -46,9 +45,7 @@ else
         CONT_WORK_DIR="${CONT_WORK_DIR}/api"
         ;;
     'frontend')
-        # TODO: make it use ${DEV_SERVER} when it needs to
-        PROXY_TARGET="--env.proxy.target=${2:-http://0.0.0.0:8000}/"
-        COMMAND="npm run serve -- ${PROXY_TARGET} --host=0.0.0.0"
+        COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
         CONT_WORK_DIR="${CONT_WORK_DIR}/client"
         ;;
     'mysql')
@@ -96,6 +93,6 @@ case $TASK in
     echo "../docker/web frontend {backend server} Webpack dev. server"
     echo "../docker/phpcs                         run php code sniffer"
     echo "../docker/phpmd                         run php mess detector"
-    echo -e "\ncontainer frontend ${DEV_SERVER}"
+    echo -e "\ncontainer frontend"
     ;;
 esac
