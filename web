@@ -74,7 +74,7 @@ case $TASK in
         ${CONT_NAME} bash
     ;;
 'shell')
-    # wait for container to be up efore trying anything
+    # wait for container to be up before trying anything
     until [[ $(docker container ls | grep ${RUN_NAME} | wc -l) == 1 ]]
     do
         sleep 0.1
