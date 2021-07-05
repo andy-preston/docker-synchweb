@@ -43,7 +43,8 @@ else
         CONT_WORK_DIR="${CONT_WORK_DIR}/api"
         ;;
     'frontend')
-        COMMAND="npm run serve -- --env.proxy.target=http://0.0.0.0:8000/ --host=0.0.0.0"
+        PROXY_TARGET="--env.proxy.target=${2:-http://0.0.0.0:8000}/"
+        COMMAND="npm run serve -- ${PROXY_TARGET} --host=0.0.0.0"
         CONT_WORK_DIR="${CONT_WORK_DIR}/client"
         ;;
     'mysql')
@@ -91,6 +92,5 @@ case $TASK in
     echo "../docker/web frontend {backend server} Webpack dev. server"
     echo "../docker/phpcs                         run php code sniffer"
     echo "../docker/phpmd                         run php mess detector"
-    echo -e "\ncontainer frontend"
     ;;
 esac
