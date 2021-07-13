@@ -23,6 +23,7 @@ if [[ ${THIS_SCRIPT} != 'web' ]]
 then
     TASK='shell'
     TTY=''
+    WAIT_FAIL='fail'
     case ${THIS_SCRIPT} in
     'php')
         COMMAND="php $@"
@@ -34,6 +35,7 @@ then
 else
     TASK='shell'
     TTY='--tty'
+    WAIT_FAIL='wait'
     case $1 in
     'shell')
         COMMAND='bash'
@@ -73,11 +75,25 @@ case $TASK in
         ${CONT_NAME} bash
     ;;
 'shell')
-    # wait for container to be up before trying anything
-    until [[ $(docker container ls | grep ${RUN_NAME} | wc -l) == 1 ]]
-    do
-        sleep 0.1
-    done
+    isNotRunning () {
+        [[ $(docker container ls | grep ${RUN_NAME} | wc -l) == 0 ]]
+    }
+
+    case $WAIT_FAIL in
+    'wait')
+        while isNotRunning
+        do
+            sleep 0.1
+        done
+        ;;
+    'fail')
+        if isNotRunning
+        then
+            echo container not running >&2
+            exit 1
+        fi
+        ;;
+    esac
 
     docker container exec \
         --interactive ${TTY} \
