@@ -21,8 +21,8 @@ RUN apt-get update && \
     apt-get update && \
     apt-get -y --no-install-recommends install \
         default-mysql-client git nodejs unzip zip \
-        php5.6-bcmath php5.6-cli php5.6-curl php5.6-json php5.6-mbstring \
-        php5.6-mysqli php5.6-opcache php5.6-readline php5.6-xml php5.6-zip && \
+        php5.6-cli php5.6-common php5.6-curl php5.6-json php5.6-mbstring \
+        php5.6-mysqli php5.6-opcache php5.6-readline php5.6-xml && \
     curl -sS https://getcomposer.org/installer | \
         php -- --install-dir=/usr/local/bin --filename=composer && \
     curl -sS --output /usr/local/bin/phpcs --location \
