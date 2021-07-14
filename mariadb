@@ -35,7 +35,7 @@ case $JOB in
     THIS_DIR="$(pwd)"
     DB_DIR="${THIS_DIR}/storage/database"
     mkdir -p ${DB_DIR}
-    
+
     docker run \
         --rm --interactive --tty \
         --volume ${DB_DIR}:/var/lib/mysql \
