@@ -8,7 +8,7 @@ COPY mysql-config.php /usr/local/bin
 RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
     yum install -y \
         mariadb git nodejs unzip zip \
-        php-cli php-mbstring php-mysql php-xml && \
+        php-cli php-mbstring php-mysqlnd php-xml && \
     curl -sS https://getcomposer.org/installer | \
         php -- --install-dir=/usr/local/bin --filename=composer && \
     curl -sS --output /usr/local/bin/phpcs --location \
