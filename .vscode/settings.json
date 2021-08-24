@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
+        "linters",
+        "mariadb",
+        "phpcs",
+        "phpmd",
         "synchweb",
         "vserv"
     ]
