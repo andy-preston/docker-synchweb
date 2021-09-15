@@ -60,11 +60,23 @@ case $TASK in
     echo -e "\nMounting network FS dir\n"
     mount $HOST_FS_DIR
 
+    # I need to inject DNS servers into the contaner so that It can "see"
+    # The database servers that I'm accessing through a VPN
+    DNS_SERVERS=$(
+        for CONNECTION in $(
+            nmcli --terse --fields UUID connection show --active
+        )
+        do
+            nmcli --terse -fields IP4.DNS connection show $CONNECTION
+        done | awk -F: '{ print "--dns " $2 }'
+    )
+
     docker run \
         --rm --interactive --tty \
         --workdir ${CONT_WORK_DIR} \
         --publish 8000:8000 \
         --publish 9000:9000 \
+        ${DNS_SERVERS} \
         --user $(id -u):$(id -g) \
         --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
         --volume ${HOME}/.ssh:/home/dev/.ssh:ro \
