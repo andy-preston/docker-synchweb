@@ -67,7 +67,7 @@ case $TASK in
             nmcli --terse --fields UUID connection show --active
         )
         do
-            nmcli --terse -fields IP4.DNS connection show $CONNECTION
+            nmcli --terse -fields IP4.DNS connection show ${CONNECTION}
         done | awk -F: '{ print "--dns " $2 }'
     )
 
