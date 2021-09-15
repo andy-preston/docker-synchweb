@@ -57,8 +57,13 @@ case $TASK in
 'run')
     docker build --tag ${CONT_NAME} ${DOCKER_DIR}
 
-    echo -e "\nMounting network FS dir\n"
-    mount $HOST_FS_DIR
+    if [ "$(ls -A ${HOST_FS_DIR})" ]
+    then
+        echo 'network FS dir already mounted'
+    else
+        echo 'Mounting network FS dir'
+        mount ${HOST_FS_DIR}
+    fi
 
     # I need to inject DNS servers into the contaner so that It can "see"
     # The database servers that I'm accessing through a VPN
