@@ -27,6 +27,7 @@ then
         ;;
     esac
 else
+    echo Running from $(pwd)
     TASK='shell'
     TTY='--tty'
     WAIT_FAIL='wait'
