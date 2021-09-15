@@ -7,6 +7,8 @@ WEB="$DOCKER_DIR/web"
 
 WORK_DIR=$(echo $DOCKER_DIR | sed 's/docker/SynchWeb/g')
 
+cd $WORK_DIR
+
 xfce4-terminal --maximize \
     --command="$WEB backend" --title='backend' \
     --tab --command="$WEB frontend" --title='frontend' \
