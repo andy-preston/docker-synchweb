@@ -8,7 +8,7 @@ THIS_SCRIPT=$(basename $0)
 cd $(echo ${DOCKER_DIR} | sed 's/docker/SynchWeb/g')
 
 HOST_WORK_DIR=$(pwd)
-CONT_WORK_DIR='/usr/local/src'
+CONT_WORK_DIR='/var/www/sites/synchweb'
 
 if [[ ${THIS_SCRIPT} != 'web' ]]
 then
