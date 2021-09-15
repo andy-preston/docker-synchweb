@@ -1,5 +1,8 @@
 #!/bin/bash
 
+HOST_FS_DIR='/media/dls'
+CONT_FS_DIR='/dls'
+
 CONT_NAME='php-sw'
 RUN_NAME="run-${CONT_NAME}"
 DOCKER_DIR=$(dirname $0)
@@ -53,24 +56,18 @@ case $TASK in
 'run')
     docker build --tag ${CONT_NAME} ${DOCKER_DIR}
 
-    DNS_SERVERS=$(
-        for CONNECTION in $(
-            nmcli --terse --fields UUID connection show --active
-        )
-        do
-            nmcli --terse -fields IP4.DNS connection show $CONNECTION
-        done | awk -F: '{ print "--dns " $2 }'
-    )
+    echo -e "\nMounting network FS dir\n"
+    mount $HOST_FS_DIR
 
     docker run \
         --rm --interactive --tty \
         --workdir ${CONT_WORK_DIR} \
         --publish 8000:8000 \
         --publish 9000:9000 \
-        ${DNS_SERVERS} \
         --user $(id -u):$(id -g) \
         --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
         --volume ${HOME}/.ssh:/home/dev/.ssh:ro \
+        --volume ${HOST_FS_DIR}:/${CONT_FS_DIR} \
         --name ${RUN_NAME} \
         ${CONT_NAME} bash
     ;;
