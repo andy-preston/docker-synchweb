@@ -45,7 +45,7 @@ else
         CONT_WORK_DIR="${CONT_WORK_DIR}/client"
         ;;
     'mysql')
-        COMMAND='php /usr/local/bin/mysql-config.php'
+        COMMAND="php /usr/local/bin/mysql-config.php ${CONT_WORK_DIR}"
         ;;
     *)
         TASK=$1

@@ -1,6 +1,6 @@
 <?php
 
-require '/usr/local/src/api/config.php';
+require $argv[1] . '/api/config.php';
 
 list($host, $db) = explode('/', $isb['db']);
 $port = array_key_exists('port', $isb) ? $isb['port'] : '3306';
