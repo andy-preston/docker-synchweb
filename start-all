@@ -1,9 +1,8 @@
 #!/bin/bash
 
-DOCKER_DIR=$(realpath $(dirname $0))
-WEB="${DOCKER_DIR}/web"
-WORK_DIR=$(echo ${DOCKER_DIR} | sed 's/docker/SynchWeb/g')
-cd $WORK_DIR
+source ./env start
+export HOST_WORK_DIR=$(dirname $(realpath $0) | sed "s/docker/SynchWeb/g")
+cd $HOST_WORK_DIR
 
 nmcli con up id 'Diamond Light Source'
 
@@ -12,12 +11,10 @@ then
     echo 'network FS dir already mounted'
 else
     echo 'Mounting network FS dir'
-    #mount ${HOST_FS_DIR}
+    mount ${HOST_FS_DIR}
 fi
 
-xfce4-terminal --maximize \
-    --command="$WEB backend" --title='backend' \
-    --tab --command="${DOCKER_DIR}/js/start frontend" --title='frontend' \
-    --tab --command="${DOCKER_DIR}/php/start backend" --title='backend' \
-    --tab --command="fish --init-command='cd $WORK_DIR'" --title="$WORK_DIR"
+xfce4-terminal \
+    --tab --command="../docker/php/start backend" --title='backend' \
+    --tab --command="../docker/js/start frontend" --title='frontend'
 
