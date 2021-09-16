@@ -1,0 +1,14 @@
+#!/bin/bash
+
+while true
+do
+    IP=$(docker inspect $1 | awk -F'"' '/"IPAddress"/ { print $4 }' | uniq)
+    if [[ ${IP} == '' ]]
+    then
+        echo "waiting for $1 IP"
+        sleep 1
+    else
+        echo ${IP}
+        exit
+    fi
+done

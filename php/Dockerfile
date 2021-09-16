@@ -3,11 +3,9 @@ ENV TERM=linux
 ENV COMPOSER_HOME=/var/tmp/composer
 
 COPY lint-docker /usr/local/bin
-COPY mysql-config.php /usr/local/bin
 
-RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
-    yum install -y \
-        mariadb git nodejs unzip zip \
+RUN yum install -y \
+        git unzip zip \
         php-cli php-mbstring php-mysqlnd php-xml && \
     curl -sS https://getcomposer.org/installer | \
         php -- --install-dir=/usr/local/bin --filename=composer && \
@@ -23,4 +21,3 @@ RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash - && \
     useradd --create-home --shell /bin/bash --gid 1000 --uid 1000 dev && \
     echo Cleanup && \
     rm -rf /usr/share/doc/*
-

@@ -2,24 +2,23 @@
 
 At the moment, this is all very much in a state of "it works on my machine"...
 
-## [start-all](start-all)
+# backend
 
-Script to start all of the services in their own tabs of an
-[xfce4-terminal](https://docs.xfce.org/apps/terminal/start).
+    ../docker/php/start shell    bash
+    ../docker/php/start backend  PHP dev. server
+    ../docker/php                Run PHP with params
+    ../docker/phpcs              Run PHP Code Sniffer
+    ../docker/phpmd              Run PHP Mess Detector
 
-## [mariadb](mariadb)
+# frontend
 
-A generic container for a MariaDB instance.
+    ../docker/js/start shell    bash
+    ../docker/js/start frontend Webpack dev. server
 
-Not currently being used / developed. I'm using our on-site development
-server for database access as this has more "realistic" data than I could
-provide in my own instance.
+# mariadb command line
 
-## Linters
+    ../docker/mariadb/start
 
-The `lint-docker` script and the `php`, `phpcs` & `phpmd` symlinks
-enable you to run linter extensions from VSCode with the linters living in the
-container. If you're using a different IDE or different IDE plugins to access
-these linters, you might need to modify the [lint-docker](lint-docker) wrapper
+# config
 
-## [web](web) - The main script for doing everything
+See ./env

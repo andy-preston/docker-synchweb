@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Config section
+
+PREFIX='synchweb'
+
+export HOST_WORK_DIR=$(dirname $(dirname $(realpath $0)) | sed "s/docker/SynchWeb/g")
+export CONT_WORK_DIR='/var/www/sites/synchweb'
+export HOST_FS_DIR='/media/dls'
+export CONT_FS_DIR='/dls'
+
+# 'Do not fiddle with' section
+
+export CONT_NAME="${PREFIX}-$1"
+export RUN_NAME="run-${CONT_NAME}"
+export BACKEND_RUN_NAME="run-${PREFIX}-php"

@@ -1,18 +1,23 @@
 #!/bin/bash
 
 DOCKER_DIR=$(realpath $(dirname $0))
-
-MARIADB="$DOCKER_DIR/mariadb"
-WEB="$DOCKER_DIR/web"
-
-WORK_DIR=$(echo $DOCKER_DIR | sed 's/docker/SynchWeb/g')
-
+WEB="${DOCKER_DIR}/web"
+WORK_DIR=$(echo ${DOCKER_DIR} | sed 's/docker/SynchWeb/g')
 cd $WORK_DIR
+
+nmcli con up id 'Diamond Light Source'
+
+if [ "$(ls -A ${HOST_FS_DIR})" ]
+then
+    echo 'network FS dir already mounted'
+else
+    echo 'Mounting network FS dir'
+    #mount ${HOST_FS_DIR}
+fi
 
 xfce4-terminal --maximize \
     --command="$WEB backend" --title='backend' \
-    --tab --command="$WEB frontend" --title='frontend' \
-    --tab --command="$WEB run" --title='web container' \
-    --tab --command="fish --init-command='cd $WORK_DIR'" --title="$WORK_DIR" \
-    # --tab --command="$MARIADB run" --title='mariadb'
+    --tab --command="${DOCKER_DIR}/js/start frontend" --title='frontend' \
+    --tab --command="${DOCKER_DIR}/php/start backend" --title='backend' \
+    --tab --command="fish --init-command='cd $WORK_DIR'" --title="$WORK_DIR"
 
