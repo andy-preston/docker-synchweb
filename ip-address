@@ -1,13 +1,9 @@
 #!/bin/bash
 
-while true
+until $(docker ps | grep -q $1)
 do
-    IP=$(docker inspect $1 | awk -F'"' '/"IPAddress"/ { print $4 }' | uniq)
-    if [[ ${IP} == '' ]]
-    then
-        sleep 1
-    else
-        echo ${IP}
-        exit
-    fi
+    echo "waiting for $1 to come up" >&2
+    sleep 1
 done
+
+docker inspect $1 | awk -F'"' '/"IPAddress"/ { print $4 }' | uniq
