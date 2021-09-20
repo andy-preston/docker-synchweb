@@ -41,8 +41,6 @@ else
     esac
 fi
 
-echo here ${CONT_NAME}
-
 if (docker ps | grep -q ${CONT_NAME})
 then
     docker container exec \
