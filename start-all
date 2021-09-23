@@ -1,8 +1,6 @@
 #!/bin/bash
 
-source ./env start
-export HOST_WORK_DIR=$(dirname $(realpath $0) | sed "s/docker/SynchWeb/g")
-cd $HOST_WORK_DIR
+source $(dirname $(realpath $0))/env
 
 nmcli con up id 'Diamond Light Source'
 
