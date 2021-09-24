@@ -2,7 +2,7 @@
 
 DIR=$(dirname $(realpath $0))
 source ${DIR}/../env
-source ${DIR}/../util/db-tunnel
+source ${DIR}/../util/db-tunnel dev
 source ${DIR}/../util/fs-tunnel
 
 xfce4-terminal \
