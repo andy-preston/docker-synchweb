@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DIR=$(dirname $(realpath $0))
+source ${DIR}/../env
+source ${DIR}/../util/db-tunnel
+source ${DIR}/../util/fs-tunnel
+
+xfce4-terminal \
+    --tab --command="${DIR}/../php/start backend" --title='backend' \
+    --tab --command="${DIR}/../js/start frontend" --title='frontend'
+
