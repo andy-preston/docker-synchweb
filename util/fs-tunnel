@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR=$(dirname $(realpath $0))
+source ${DIR}/../env
+
+if [ "$(ls -A ${HOST_FS_DIR})" ]
+then
+    echo 'network FS dir already mounted'
+else
+    echo 'Mounting network FS dir'
+    mount ${HOST_FS_DIR}
+fi
+
