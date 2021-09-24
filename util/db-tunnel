@@ -20,7 +20,7 @@ echo "\$motd = 'Database config: ${CONNECTION}';" >> ${CONFIG}
 echo "Closing existing tunnels on ports 3306 or 4306"
 for PID in $(lsof -Pan -i4 -c ssh 2>/dev/null | awk '/:[34]306/ { print $2 }')
 do
-    ps ax | grep ${PID} | grep -v grep
+    ps wh ${PID}
     kill -9 ${PID}
 done
 
