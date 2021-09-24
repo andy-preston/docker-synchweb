@@ -1,0 +1,30 @@
+#!/bin/bash
+
+DIR=$(dirname $(realpath $0))
+source ${DIR}/../env
+
+CONNECTION=$1
+CONFIG="${HOST_WORK_DIR}/api/config.php"
+
+read USER PASS HOST DB PORT <<< $(
+    awk -F: "/^${CONNECTION}:/ { print \$2, \$3, \$4, \$5, \$6 }" "${DIR}/../database_config"
+)
+
+GATEWAY=$(docker network inspect bridge | awk -F\" '/"Gateway":/ { print $4 }')
+
+cp ${CONFIG} ${CONFIG}.backup
+grep -v -e '$motd =' -e '$isb =' ${CONFIG}.backup > ${CONFIG}
+echo "\$isb = array('user' => '${USER}', 'pass' => '${PASS}', 'db' => '${GATEWAY}/${DB}', 'port' => ${PORT});" >> ${CONFIG}
+echo "\$motd = 'Database config: ${CONNECTION}';" >> ${CONFIG}
+
+echo "Closing existing tunnels on ports 3306 or 4306"
+for PID in $(lsof -Pan -i4 -c ssh | awk '/:[34]306/ { print $2 }')
+do
+    ps ax | grep ${PID} | grep -v grep
+    kill -9 ${PID}
+done
+
+echo "Opening tunnel to ${HOST}:${PORT}"
+
+ssh -f "${SSH_TUNNEL}" -L "${GATEWAY}:${PORT}:${HOST}:${PORT}" -N
+
