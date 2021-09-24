@@ -1,6 +1,5 @@
 #!/bin/bash
 
-THIS_SCRIPT=$(basename $0)
 DOCKER_DIR=$(dirname $(realpath $0))
 source ${DOCKER_DIR}/../env php
 
@@ -55,7 +54,6 @@ else
         --rm --interactive --tty \
         --workdir ${CONT_WORK_DIR} \
         --publish 8000:8000 \
-        $(${DOCKER_DIR}/../dns-servers) \
         --user $(id -u):$(id -g) \
         --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
         --volume ${HOME}/.ssh:/home/dev/.ssh:ro \

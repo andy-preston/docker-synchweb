@@ -3,15 +3,13 @@
 DOCKER_DIR=$(dirname $(realpath $0))
 source ${DOCKER_DIR}/../env js
 
-# node client/node_modules/webpack-dev-server/bin/webpack-dev-server.js
-#                         --env.proxy.target=http://0.0.0.0:8000 --host=0.0.0.0
-
 case $1 in
 'shell')
     COMMAND='bash'
     ;;
 'frontend')
-    PROXY="http://$(${DOCKER_DIR}/../ip-address ${BACKEND_RUN_NAME}):8000/"
+    PROXY_IP=$(${DOCKER_DIR}/../util/ip-address ${BACKEND_RUN_NAME})
+    PROXY="http://${PROXY_IP}:8000/"
     COMMAND="npm run serve -- --env.proxy.target=${PROXY} --host=0.0.0.0"
     ;;
 *)
@@ -47,3 +45,4 @@ else
         ${CONT_NAME} \
         ${COMMAND}
 fi
+

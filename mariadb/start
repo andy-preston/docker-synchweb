@@ -18,7 +18,6 @@ else
     docker run \
         --rm --interactive --tty \
         --workdir ${CONT_WORK_DIR} \
-        $(${DOCKER_DIR}/../dns-servers) \
         --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
         --name ${RUN_NAME} \
         ${CONT_NAME} \
