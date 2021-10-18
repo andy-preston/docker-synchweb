@@ -1,0 +1,51 @@
+#!/bin/bash
+
+DOCKER_DIR=$(dirname $(realpath $0))
+source ${DOCKER_DIR}/../env py
+
+case $1 in
+'shell')
+    TTY='--tty'
+    COMMAND='bash'
+    ;;
+'py-ispyb')
+    TTY='--tty'
+    COMMAND='bash'
+    ;;
+*)
+    echo "../docker/py/start shell        bash"
+    echo "../docker/py/start py-ispyb     run flask container"
+    exit
+    ;;
+esac
+
+echo Running from $(pwd)
+
+if (docker ps | grep -q ${CONT_NAME})
+then
+    echo 'Container alreday running'
+
+    docker container exec \
+        --interactive --tty \
+        --workdir ${CONT_WORK_DIR} \
+        ${RUN_NAME} \
+        ${COMMAND}
+else
+    echo 'Starting new container'
+
+    cp requirements.txt ${DOCKER_DIR}/requirements.txt
+    cp tasks/requirements.txt ${DOCKER_DIR}/requirements-tasks.txt
+    cp pyispyb/requirements.txt ${DOCKER_DIR}/requirements-pyispyb.txt
+    docker build --tag ${CONT_NAME} ${DOCKER_DIR}
+    rm ${DOCKER_DIR}/requirements*
+
+    docker run \
+        --rm --interactive --tty \
+        --workdir ${CONT_WORK_DIR} \
+        --publish 5000:5000 \
+        --user $(id -u):$(id -g) \
+        --volume ${HOST_WORK_DIR}:${CONT_WORK_DIR} \
+        --name ${RUN_NAME} \
+        ${CONT_NAME} \
+        ${COMMAND}
+fi

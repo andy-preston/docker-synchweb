@@ -2,16 +2,22 @@
 
 # Config section
 
-PREFIX='synchweb'
-HOST_WORK_DIR=$(dirname $(dirname $(realpath $0)) | sed "s/docker/SynchWeb/g")
-CONT_WORK_DIR='/var/www/sites/synchweb'
+if [[ $1 = "py" ]]
+then
+    PREFIX=py-ispyb
+else
+    PREFIX=SynchWeb
+fi
 HOST_FS_DIR='/media/dls'
 CONT_FS_DIR='/dls'
-SSH_TUNNEL='user@example.com'
+SSH_TUNNEL='nfx92172@ssh.diamond.ac.uk'
 
 # 'Do not fiddle with' section
 
-THIS_SCRIPT=$(basename $0)
+HOST_WORK_DIR=$(realpath ../${PREFIX})
+PREFIX=$(echo "${PREFIX}" | tr '[:upper:]' '[:lower:]')
+CONT_WORK_DIR="/var/www/sites/${PREFIX}"
 CONT_NAME="${PREFIX}-$1"
 RUN_NAME="run-${CONT_NAME}"
 BACKEND_RUN_NAME="run-${PREFIX}-php"
+THIS_SCRIPT=$(basename $0)
